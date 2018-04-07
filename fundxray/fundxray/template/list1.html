@@ -1,0 +1,39 @@
+<html>
+<head></head>
+<body>
+<table>
+<tr>
+累计净值TOP10
+</tr>
+<tr>
+    <td>基金代码</td>
+    <td>基金净值</td>
+    <td>累计净值</td>
+</tr>
+{% for item in tops %}
+<tr>
+    <td>{{item.code}}</td>
+    <td>{{item.jjjz}}</td>
+    <td>{{item.ljjz}}</td>
+</tr>
+{% endfor %}
+</table>
+<table>
+<tr>
+累计净值TOP10
+</tr>
+<tr>
+    <td>基金代码</td>
+    <td>增长</td>
+    <td>震幅</td>
+</tr>
+{% for item in tops2 %}
+<tr>
+    <td>{{item.code}}</td>
+    <td>{{item.increases}}</td>
+    <td>{{item.jitter}}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>

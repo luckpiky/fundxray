@@ -1,0 +1,158 @@
+<html>
+<head>
+    <!-- 引入 echarts.js -->
+    <script src="/static/echarts.min.js"></script>
+    <script src="/static/walden.js"></script>
+    <script src="/static/dark.js"></script>
+</head>
+
+
+<body>
+<b><font size="10"> {{ name }} {{ code }}</font></b>
+
+<table>
+    <tr>
+        <td><div id="main" style="width: 600px;height:400px;"></div></td>
+        <td><div id="main1" style="width: 600px;height:400px;"></div></td>
+    </tr>
+</table>
+
+
+        <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'), 'walden');
+
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '收益情况'
+            },
+           tooltip: {trigger: 'axis'},
+            legend: {
+                data:['收益']
+            },
+            xAxis: {
+                data: [
+                {% for item in jjjg %}
+                "{{item.date|date:"Y-m-d"}}",
+                {% endfor %}
+                ]
+            },
+            yAxis: {},
+
+            series: [{
+                name: '收益',
+                type: 'line',
+                data: [
+                {% for item in jjjg %}
+                {{item.income}},
+                {% endfor %}
+                ]
+            }]
+
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+
+
+        <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        //var myChart = echarts.init(document.getElementById('main1'));
+        var myChart = echarts.init(document.getElementById('main1'), 'walden');
+
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '收益率'
+            },
+           tooltip: {trigger: 'axis'},
+            legend: {
+                data:['收益率', '净值增长率']
+            },
+            xAxis: {
+                data: [
+                {% for item in jjjg %}
+                "{{item.date|date:"Y-m-d"}}",
+                {% endfor %}
+                ]
+            },
+            yAxis: {},
+            series: [
+            {
+                name: '收益率',
+                type: 'line',
+                symbol:'none',
+                data: [
+                {% for item in jjjg %}
+                {{item.income_rate}},
+                {% endfor %}
+                ],
+                markPoint : {
+                    itemStyle: {
+                    emphasis : {
+                            label : {show: true}
+                        }
+                    },
+                    data : [
+                    {% for item in jjjg %}
+                    {% if item.cost_count > 0 %}
+                    {name: "{{item.cost_count}}", value:3, xAxis:{{item.index}}, yAxis:{{item.income_rate}},symbol:"pin", symbolSize:15},
+                    {% endif %}
+
+                    {% if item.cost_count < 0 %}
+                    {name: "{{item.cost_count}}", value:3, xAxis:{{item.index}}, yAxis:{{item.income_rate}},symbol:"star", symbolSize:15},
+                    {% endif %}
+
+                    {% endfor %}
+                    ]
+                },
+            },
+             {
+                name: '净值增长率',
+                type: 'line',
+                symbol: 'none',
+                data: [
+                {% for item in jjjg %}
+                {{item.incr_rate}},
+                {% endfor %}
+                ]
+             },
+            ]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+
+<table border="1px">
+<tr>
+    <td>日期</td>
+    <td>基金净值</td>
+    <td>累计净值</td>
+    <td>增加份额</td>
+    <td>份额</td>
+    <td>市值</td>
+    <td>累计成本</td>
+    <td>累计收入</td>
+    <td>收益率</td>
+</tr>
+{% for item in jjjg %}
+<tr>
+    <td>{{item.date}}</td>
+    <td>{{item.jjjz}}</td>
+    <td>{{item.ljjz}}</td>
+    <td>{{item.cost_count}}</td>
+    <td>{{item.count}}</td>
+    <td>{{item.value}}</td>
+    <td>{{item.cost}}</td>
+    <td>{{item.income}}</td>
+    <td>{{item.income_rate}}</td>
+</tr>
+{% endfor %}
+</table>
+</body>
+</html>
+
+

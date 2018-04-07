@@ -1,0 +1,71 @@
+<html>
+<head>
+    <!-- 引入 echarts.js -->
+    <script src="/static/echarts.min.js"></script>
+    <script src="/static/walden.js"></script>
+    <script src="/static/dark.js"></script>
+</head>
+
+
+<body>
+<b><font size="10"> {{ name }} {{ code }}</font></b>
+
+<table>
+    <tr>
+        <td><div id="main" style="width: 600px;height:400px;"></div></td>
+    </tr>
+</table>
+
+<table>
+    <tr>
+        <td>最大跌幅：</td><td>{{zddf}}</td>
+    </tr>
+    <tr>
+        <td>最大涨幅：</td><td>{{zdzf}}</td>
+    </tr>
+    <tr>
+        <td>收益率：</td><td>{{shouyilv}}</td>
+    </tr>
+</table>
+
+        <script type="text/javascript">
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'), 'walden');
+
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: '{{type}}收益情况'
+            },
+           tooltip: {trigger: 'axis'},
+            legend: {
+                data:['收益']
+            },
+            xAxis: {
+                data: [
+                {% for item in jjjg %}
+                "{{item.date|date:"Y-m-d"}}",
+                {% endfor %}
+                ]
+            },
+            yAxis: {},
+
+            series: [{
+                name: '收益',
+                type: 'line',
+                data: [
+                {% for item in jjjg %}
+                {{item.incr_rate}},
+                {% endfor %}
+                ]
+            }]
+
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    </script>
+</body>
+</html>
+
+
