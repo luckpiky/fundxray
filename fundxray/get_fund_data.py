@@ -17,5 +17,5 @@ if __name__ == "__main__":
     execute_from_command_line(sys.argv)
     
     from fund.catch_fund_data import *
-    catch_all_fund_data()
+    catch_all_fund_data(False)
             

@@ -81,7 +81,7 @@ class CatchFundData():
             content = urllib.request.urlopen(url).read()
             #print("get content, len:", len(content))
             j = json.loads(content)
-            #print("parse json", j['result']['data'])
+            print("parse json", j['result']['data'])
             for t in j['result']['data']['data']:
                 #print(t)
                 self.save_data(t)

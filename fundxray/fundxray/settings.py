@@ -77,13 +77,18 @@ WSGI_APPLICATION = 'fundxray.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'fundxray',
-        'USER': 'postgres',
-        'PASSWORD':'admin@123',
-        'HOST':'139.196.143.185',
-        'PORT':'5432',
-    }
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'fund_syh.db3'),
+    } 
+    
+    #'default': {
+    #    'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #    'NAME': 'fundxray',
+    #    'USER': 'postgres',
+    #    'PASSWORD':'admin@123',
+    #    'HOST':'139.196.143.185',
+    #    'PORT':'5432',
+    #}
 }
 
 
