@@ -159,9 +159,60 @@ func WriteFundDataToCsv(fileName string, fundDataList *list.List) {
 
 	sort.Sort(FundDataSlice(oldData)) 
 
+	preLjjz := 0.0
+	ljjz0 := 0.0
+	jjjz0 := 0.0
+    var calcDataArray [][]float64
+
 	for i := 0; i < len(oldData);i++{
-		data := [][]string{oldData[i]}
+
+		jjjz, _ := strconv.ParseFloat(oldData[i][1],64)
+		ljjz, _ := strconv.ParseFloat(oldData[i][2],64)
+
+		var rateStr string
+		var rate float64
+		if (0 == i) {
+			rateStr = "0.0000"
+			ljjz0 = ljjz
+			jjjz0 = jjjz
+			rate = 0.0
+		} else {
+			rate = (ljjz - preLjjz) / jjjz * 100.0
+			rateStr = fmt.Sprintf("%.4f", rate)
+		}
+
+		rateHistory := (ljjz - ljjz0) / jjjz0 * 100.0
+		rateHistoryStr := fmt.Sprintf("%.4f", rateHistory)
+
+		ratePerYearHistoryAverage := rateHistory / (float64(i+1) / 242.0)
+		ratePerYearHistoryAverageStr := fmt.Sprintf("%.4f", ratePerYearHistoryAverage)
+
+		calcDataArray = append(calcDataArray, []float64{jjjz, ljjz, rate, rateHistory, ratePerYearHistoryAverage})
+
+		var rateJitter float64
+		if  i < 10 {
+			rateJitter = 0.0
+		} else {
+			for j := 0; j < 10; j++ {
+				tmp := calcDataArray[i - j] [2] - calcDataArray[i - j - 1] [2]
+				if tmp < 0.0 {
+					rateJitter -= tmp
+				} else {
+					rateJitter += tmp
+				}
+			}
+		}
+		rateJitter /= 10.0
+		rateJitterStr := fmt.Sprintf("%.4f", rateJitter)
+
+		/* 写入的内容：日期，基金净值，累计净值，增长率，历史增长率，历史年化收益率，增长率抖动（１０个交易日平均） */
+		writeData := []string{oldData[i][0], oldData[i][1], oldData[i][2], rateStr, rateHistoryStr, ratePerYearHistoryAverageStr, rateJitterStr}
+
+		data := [][]string{writeData}
+
 		w.WriteAll(data)//写入数据
+
+		preLjjz = ljjz
 	}
 
 	log.Println("读取数据条目数：", fundDataList.Len())
@@ -200,6 +251,10 @@ func main() {
 	if data.Len() == 0 {
 		log.Println("没有获取到数据")
 		return
+	}
+
+	if (*saveDir)[len(*saveDir) - 1] != '/'{
+		*saveDir = *saveDir + "/"
 	}
 
 	WriteFundDataToCsv(*saveDir+*fundCode+".csv", data)
